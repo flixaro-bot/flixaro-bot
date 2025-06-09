@@ -1,0 +1,38 @@
+import telebot
+import datetime
+import requests
+
+from telebot import types
+import os
+
+# Token is expected to be passed from environment variables
+TOKEN = os.environ.get("TOKEN", "YOUR_BOT_TOKEN_HERE")
+bot = telebot.TeleBot(TOKEN)
+
+@bot.message_handler(commands=['start'])
+def start(message):
+    bot.reply_to(message, "🎬 خوش اومدی به Flixaro!
+سریال مورد علاقتو بفرست تا پیداش کنم.")
+
+@bot.message_handler(func=lambda m: True)
+def search_series(message):
+    text = message.text.strip().lower()
+    if text == "dark":
+        bot.send_message(message.chat.id, "🔍 سریال Dark:
+ژانر: معمایی، علمی‌تخیلی
+IMDB: 8.7
+لینک دانلود: [در دست ساخت]")
+    elif text == "game of thrones":
+        bot.send_message(message.chat.id, "🐉 سریال Game of Thrones:
+ژانر: فانتزی، اکشن
+IMDB: 9.2
+لینک دانلود: [در دست ساخت]")
+    elif "تاریخ" in text or "امروز" in text:
+        today = datetime.date.today()
+        bot.send_message(message.chat.id, f"📅 تاریخ امروز: {today.strftime('%Y/%m/%d')}
+(مناسبت‌ها: در نسخه بعدی اضافه میشه)")
+    else:
+        bot.send_message(message.chat.id, "متاسفم، سریال مورد نظرتو پیدا نکردم.
+لطفا دقیق‌تر بنویس یا منتظر آپدیت‌های بعدی باش.")
+
+bot.polling()
